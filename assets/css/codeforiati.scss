@@ -1,0 +1,74 @@
+---
+---
+
+$color_healthy: #28a745;
+$color_unhealthy: #e25a14;
+
+.text-healthy {
+  color: $color_healthy;
+}
+
+.text-unhealthy {
+  color: $color_unhealthy;
+}
+
+.rect-healthy {
+  fill: $color_healthy;
+}
+
+.rect-unhealthy {
+  fill: $color_unhealthy;
+}
+
+.alert-healthy {
+  background-color: $color_healthy;
+  color: white;
+}
+
+.alert-unhealthy {
+  background-color: $color_unhealthy;
+  color: white;
+}
+
+/* Space out content a bit */
+body {
+  /* padding-top: 1.5rem; */
+  padding-bottom: 1.5rem;
+  background-color: #ececec;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header {
+  margin-bottom: 2rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: .05rem solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 48em) {
+  .container {
+    max-width: 46rem;
+  }
+
+  /* Remove the padding we set earlier */
+  .header {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.card {
+  border-radius: 0;
+  border-bottom: none;
+
+  &:first-child {
+    border-radius: .25rem .25rem 0 0;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-radius: 0 0 .25rem .25rem;
+  }
+}

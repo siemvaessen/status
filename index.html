@@ -1,0 +1,57 @@
+---
+---
+
+{%- assign recent_data = site.data | sort | slice:-30,30 -%}
+{%- assign current = recent_data | last -%}
+
+<div class="alert alert-{{ current[1]['status'] }}">
+  <img src="/assets/img/icons/{{ current[1]['status'] }}.svg" />
+  <strong>Current status: {{ current[1]['status'] | capitalize }}</strong>
+</div>
+
+<div>
+{%- for project in current[1]['report'] -%}
+{%- assign project_id = project[0] -%}
+<div class="card">
+  <div class="card-body">
+    <span class="name">{{ project[1]['desc'] }}</span>
+
+    <svg style="width:100%" preserveAspectRatio="none" height="34" viewBox="0 0 148 34">
+      {%- for d in recent_data -%}
+      <rect id="{{ project_id }}-{{ d[0] }}" height="34" width="3" x="{{ forloop.index0 | times: 5 }}" y="0" class="rect-{{ d[1]['report'][project_id]['status'] }}" data-toggle="popover" data-placement="bottom" data-trigger="hover" title="{{ d[0] | date:'%e %B %Y' }}" data-content="Status: <span class='text-{{ d[1]['report'][project_id]['status'] }}'>{{ d[1]['report'][project_id]['status'] | capitalize }}</span>
+
+      {%- if d[1]['report'][project_id]['status'] == 'unhealthy' -%}
+      <br>The following checks failed:
+      <ul>
+        {%- assign errors = d[1]['report'][project_id]['results'] | where:'outcome', 'failed' -%}
+
+        {%- for e in errors -%}
+          {% if forloop.index0 < 3 %}
+          <li>
+            {{ e['desc'] }}
+            {%- if e['args'].size > 0 %}
+            ({{ e['args'] }})
+            {%- endif -%}
+          </li>
+          {% elsif forloop.index0 == 3 %}
+          <li>
+            …and {{ errors | size | minus:3 }} more.
+          </li>
+          {% endif %}
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+
+
+      " data-html="true"></rect>
+      {%- endfor -%}
+    </svg>
+
+    <div class="legend">
+      <small class="text-muted float-left">30 days ago</small>
+      <small class="text-muted float-right">Today</small>
+    </div>
+  </div>
+</div>
+{%- endfor -%}
+</div>
