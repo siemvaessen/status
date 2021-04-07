@@ -1,0 +1,65 @@
+name: CI
+on:
+  push:
+  schedule:
+    - cron: '0 */6 * * *'
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v2
+      name: Cache dependencies
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip wheel
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        pytest
+    - name: Save report
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: report
+        path: report.json
+  commit:
+    name: Commit result
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        ref: gh-pages
+    - uses: technote-space/workflow-conclusion-action@v2
+    - name: Download report
+      uses: actions/download-artifact@v2
+      with:
+        name: report
+    - name: Move files into place
+      run: |
+        mv report.json _data/`date +"%Y-%m-%d"`.json
+        cp tmpl/img/${{ env.WORKFLOW_CONCLUSION }}.svg status.svg
+        cp tmpl/md/${{ env.WORKFLOW_CONCLUSION }}.md _posts/`date +"%Y-%m-%d"`-index.md
+    - name: Commit files
+      run: |
+        git config --global user.email "57559326+codeforIATIbot@users.noreply.github.com"
+        git config --global user.name "Code for IATI bot"
+        git add .
+        git commit --message "Github actions build: ${{ github.run_number }}"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
