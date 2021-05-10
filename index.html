@@ -1,7 +1,7 @@
 ---
 ---
 
-{%- assign recent_data = site.data | sort -%}
+{%- assign recent_data = site.data | sort | slice:-30,30 -%}
 {%- assign current = recent_data | last -%}
 
 <div class="alert alert-{{ current[1]['status'] }}">
