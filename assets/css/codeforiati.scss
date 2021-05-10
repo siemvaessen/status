@@ -1,6 +1,7 @@
 ---
 ---
 
+$color_default: #ffffff;
 $color_healthy: #28a745;
 $color_unhealthy: #e25a14;
 
@@ -12,12 +13,16 @@ $color_unhealthy: #e25a14;
   color: $color_unhealthy;
 }
 
-.rect-healthy {
-  fill: $color_healthy;
-}
+rect {
+  fill: $color_default;
 
-.rect-unhealthy {
-  fill: $color_unhealthy;
+  &.rect-healthy {
+    fill: $color_healthy;
+  }
+
+  &.rect-unhealthy {
+    fill: $color_unhealthy;
+  }
 }
 
 .alert-healthy {
